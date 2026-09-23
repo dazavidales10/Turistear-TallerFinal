@@ -1,3 +1,18 @@
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [];
+import { Planes } from './pages/planes/planes';
+
+export const routes: Routes = [
+
+  {
+    path: 'planes',
+    component: Planes
+  },
+
+  {
+    path: '',
+    redirectTo: 'planes',
+    pathMatch: 'full'
+  }
+
+];

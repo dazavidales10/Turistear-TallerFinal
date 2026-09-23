@@ -1,0 +1,369 @@
+<div class="container py-4">
+
+  <!-- ENCABEZADO -->
+
+  <div class="mb-4">
+
+    <h1 class="titulo-principal">
+      Planes turísticos
+    </h1>
+
+    <p class="texto-descripcion">
+      Consulta y registra los planes turísticos disponibles
+      en Turistear.
+    </p>
+
+  </div>
+
+
+  <!-- MENSAJE -->
+
+  @if (mensaje) {
+
+    <div
+      class="alert"
+      [class.alert-success]="tipoMensaje === 'success'"
+      [class.alert-danger]="tipoMensaje === 'danger'"
+    >
+      {{ mensaje }}
+    </div>
+
+  }
+
+
+  <!-- FORMULARIO -->
+
+  <div class="card shadow-sm mb-5">
+
+    <div class="card-header">
+
+      <h2 class="h5 mb-0">
+        Registrar nuevo plan
+      </h2>
+
+    </div>
+
+
+    <div class="card-body">
+
+      <form
+        #planForm="ngForm"
+        (ngSubmit)="crearPlan()"
+      >
+
+        <div class="row">
+
+          <!-- NOMBRE -->
+
+          <div class="col-md-6 mb-3">
+
+            <label
+              for="nombre"
+              class="form-label"
+            >
+              Nombre del plan
+            </label>
+
+            <input
+              id="nombre"
+              type="text"
+              class="form-control"
+              name="nombre"
+              [(ngModel)]="nuevoPlan.nombre"
+              placeholder="Ej: Tour Cartagena"
+              required
+            >
+
+          </div>
+
+
+          <!-- DESTINO -->
+
+          <div class="col-md-6 mb-3">
+
+            <label
+              for="destino"
+              class="form-label"
+            >
+              Destino
+            </label>
+
+            <input
+              id="destino"
+              type="text"
+              class="form-control"
+              name="destino"
+              [(ngModel)]="nuevoPlan.destino"
+              placeholder="Ej: Cartagena"
+              required
+            >
+
+          </div>
+
+
+          <!-- DESCRIPCIÓN -->
+
+          <div class="col-12 mb-3">
+
+            <label
+              for="descripcion"
+              class="form-label"
+            >
+              Descripción
+            </label>
+
+            <textarea
+              id="descripcion"
+              class="form-control"
+              name="descripcion"
+              rows="3"
+              [(ngModel)]="nuevoPlan.descripcion"
+              placeholder="Describe el plan turístico"
+              required
+            ></textarea>
+
+          </div>
+
+
+          <!-- PRECIO -->
+
+          <div class="col-md-4 mb-3">
+
+            <label
+              for="precio"
+              class="form-label"
+            >
+              Precio
+            </label>
+
+            <input
+              id="precio"
+              type="number"
+              class="form-control"
+              name="precio"
+              [(ngModel)]="nuevoPlan.precio"
+              min="0"
+              required
+            >
+
+          </div>
+
+
+          <!-- DURACIÓN -->
+
+          <div class="col-md-4 mb-3">
+
+            <label
+              for="duracion"
+              class="form-label"
+            >
+              Duración
+            </label>
+
+            <input
+              id="duracion"
+              type="text"
+              class="form-control"
+              name="duracion"
+              [(ngModel)]="nuevoPlan.duracion"
+              placeholder="Ej: 3 días"
+              required
+            >
+
+          </div>
+
+
+          <!-- DISPONIBILIDAD -->
+
+          <div class="col-md-4 mb-3">
+
+            <label
+              for="disponibilidad"
+              class="form-label"
+            >
+              Disponibilidad
+            </label>
+
+            <input
+              id="disponibilidad"
+              type="number"
+              class="form-control"
+              name="disponibilidad"
+              [(ngModel)]="nuevoPlan.disponibilidad"
+              min="0"
+              required
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- BOTONES -->
+
+        <div class="d-flex gap-2">
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="planForm.invalid"
+          >
+            Guardar plan
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="limpiarFormulario()"
+          >
+            Limpiar
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- LISTADO -->
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+
+    <div>
+
+      <h2 class="h4 mb-1">
+        Planes registrados
+      </h2>
+
+      <p class="text-muted mb-0">
+        Total:
+        {{ planes.length }}
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      (click)="cargarPlanes()"
+    >
+      Actualizar
+    </button>
+
+  </div>
+
+
+  <!-- SIN PLANES -->
+
+  @if (planes.length === 0) {
+
+    <div class="alert alert-info">
+
+      No hay planes turísticos registrados.
+
+    </div>
+
+  }
+
+
+  <!-- TARJETAS -->
+
+  @if (planes.length > 0) {
+
+    <div class="row">
+
+      @for (
+        plan of planes;
+        track plan.id
+      ) {
+
+        <div class="col-lg-4 col-md-6 mb-4">
+
+          <div class="card h-100 shadow-sm plan-card">
+
+            <div class="card-body">
+
+              <div
+                class="d-flex justify-content-between align-items-start mb-3"
+              >
+
+                <h3 class="h5 card-title mb-0">
+                  {{ plan.nombre }}
+                </h3>
+
+                <span class="badge text-bg-primary">
+                  #{{ plan.id }}
+                </span>
+
+              </div>
+
+
+              <p class="mb-2">
+
+                <strong>
+                  Destino:
+                </strong>
+
+                {{ plan.destino }}
+
+              </p>
+
+
+              <p class="text-muted">
+
+                {{ plan.descripcion }}
+
+              </p>
+
+
+              <hr>
+
+
+              <p class="mb-2">
+
+                <strong>
+                  Duración:
+                </strong>
+
+                {{ plan.duracion }}
+
+              </p>
+
+
+              <p class="mb-2">
+
+                <strong>
+                  Precio:
+                </strong>
+
+                {{ plan.precio | currency:'COP':'symbol':'1.0-0' }}
+
+              </p>
+
+
+              <p class="mb-0">
+
+                <strong>
+                  Disponibilidad:
+                </strong>
+
+                {{ plan.disponibilidad }}
+
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>
