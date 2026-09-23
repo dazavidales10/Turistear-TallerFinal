@@ -1,0 +1,153 @@
+<div class="container py-4">
+  <div class="text-center mb-4">
+    <h1 class="titulo-principal">✈️ Vuelos</h1>
+    <p class="text-muted">Consulta y administra los vuelos disponibles.</p>
+  </div>
+
+  @if (mensaje) {
+    <div
+      class="alert"
+      [class.alert-success]="tipoMensaje === 'success'"
+      [class.alert-danger]="tipoMensaje === 'danger'">
+      {{ mensaje }}
+    </div>
+  }
+
+  <div class="card shadow-sm mb-5">
+    <div class="card-header">
+      <h4 class="mb-0">
+        {{ editando ? 'Editar vuelo' : 'Registrar vuelo' }}
+      </h4>
+    </div>
+
+    <div class="card-body">
+      <form
+        #vueloForm="ngForm"
+        (ngSubmit)="editando ? actualizarVuelo() : crearVuelo()">
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Origen</label>
+            <input
+              type="text"
+              class="form-control"
+              name="origen"
+              [(ngModel)]="nuevoVuelo.origen"
+              placeholder="Ej: Bogotá">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Destino</label>
+            <input
+              type="text"
+              class="form-control"
+              name="destino"
+              [(ngModel)]="nuevoVuelo.destino"
+              placeholder="Ej: Madrid">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Fecha de salida</label>
+            <input
+              type="datetime-local"
+              class="form-control"
+              name="fechaSalida"
+              [(ngModel)]="nuevoVuelo.fechaSalida">
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">Precio</label>
+            <input
+              type="number"
+              class="form-control"
+              name="precio"
+              [(ngModel)]="nuevoVuelo.precio"
+              min="0">
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">Cupos disponibles</label>
+            <input
+              type="number"
+              class="form-control"
+              name="cuposDisponibles"
+              [(ngModel)]="nuevoVuelo.cuposDisponibles"
+              min="0">
+          </div>
+        </div>
+
+        <div class="mt-4">
+          @if (!editando) {
+            <button type="submit" class="btn btn-primary me-2">
+              Crear vuelo
+            </button>
+          } @else {
+            <button type="submit" class="btn btn-success me-2">
+              Guardar cambios
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="cancelarEdicion()">
+              Cancelar
+            </button>
+          }
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <h2 class="mb-4">Vuelos registrados</h2>
+
+  @if (vuelos.length === 0) {
+    <div class="alert alert-info">
+      No hay vuelos registrados.
+    </div>
+  } @else {
+    <div class="row g-4">
+      @for (vuelo of vuelos; track vuelo.id) {
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100 shadow-sm vuelo-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                ✈️ {{ vuelo.origen }} → {{ vuelo.destino }}
+              </h5>
+
+              <hr>
+
+              <p class="mb-2">
+                <strong>Fecha:</strong>
+                {{ vuelo.fechaSalida | date:'dd/MM/yyyy HH:mm' }}
+              </p>
+
+              <p class="mb-2">
+                <strong>Precio:</strong>
+                ${{ vuelo.precio | number }}
+              </p>
+
+              <p class="mb-3">
+                <strong>Cupos:</strong>
+                {{ vuelo.cuposDisponibles }}
+              </p>
+
+              <div class="d-flex gap-2">
+                <button
+                  class="btn btn-outline-primary"
+                  (click)="editarVuelo(vuelo)">
+                  Editar
+                </button>
+
+                <button
+                  class="btn btn-outline-danger"
+                  (click)="eliminarVuelo(vuelo.id)">
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

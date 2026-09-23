@@ -1,0 +1,15 @@
+.titulo-principal {
+  font-weight: 700;
+}
+
+.vuelo-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vuelo-card:hover {
+  transform: translateY(-3px);
+}
+
+.vuelo-card .btn {
+  min-width: 90px;
+}
