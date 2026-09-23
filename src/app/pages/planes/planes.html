@@ -1,369 +1,214 @@
 <div class="container py-4">
+  <div class="d-flex justify-content-between align-items-end mb-4 gap-3 flex-wrap">
+    <div>
+      <h1 class="page-title mb-1">Planes turísticos</h1>
+      <p class="page-text mb-0">
+        Consulta y administra las experiencias disponibles.
+      </p>
+    </div>
 
-  <!-- ENCABEZADO -->
-
-  <div class="mb-4">
-
-    <h1 class="titulo-principal">
-      Planes turísticos
-    </h1>
-
-    <p class="texto-descripcion">
-      Consulta y registra los planes turísticos disponibles
-      en Turistear.
-    </p>
-
+    <button
+      class="btn btn-outline-primary"
+      type="button"
+      (click)="cargarPlanes()"
+      [disabled]="cargando">
+      Actualizar
+    </button>
   </div>
 
-
-  <!-- MENSAJE -->
-
   @if (mensaje) {
-
     <div
       class="alert"
       [class.alert-success]="tipoMensaje === 'success'"
-      [class.alert-danger]="tipoMensaje === 'danger'"
-    >
+      [class.alert-danger]="tipoMensaje === 'danger'">
       {{ mensaje }}
     </div>
-
   }
 
-
-  <!-- FORMULARIO -->
-
-  <div class="card shadow-sm mb-5">
-
-    <div class="card-header">
-
-      <h2 class="h5 mb-0">
-        Registrar nuevo plan
+  <div class="card card-turistear shadow-sm mb-5">
+    <div class="card-header bg-white">
+      <h2 class="h5 mb-1">
+        {{ editando ? 'Editar plan' : 'Registrar plan' }}
       </h2>
 
+      <p class="text-muted mb-0">
+        Completa los datos del destino.
+      </p>
     </div>
 
-
     <div class="card-body">
-
-      <form
-        #planForm="ngForm"
-        (ngSubmit)="crearPlan()"
-      >
-
-        <div class="row">
-
-          <!-- NOMBRE -->
-
-          <div class="col-md-6 mb-3">
-
-            <label
-              for="nombre"
-              class="form-label"
-            >
-              Nombre del plan
-            </label>
+      <form (ngSubmit)="guardarPlan()">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Nombre</label>
 
             <input
-              id="nombre"
-              type="text"
               class="form-control"
+              type="text"
               name="nombre"
               [(ngModel)]="nuevoPlan.nombre"
-              placeholder="Ej: Tour Cartagena"
-              required
-            >
-
+              placeholder="Ej. Tour Cartagena"
+              required>
           </div>
 
-
-          <!-- DESTINO -->
-
-          <div class="col-md-6 mb-3">
-
-            <label
-              for="destino"
-              class="form-label"
-            >
-              Destino
-            </label>
+          <div class="col-md-6">
+            <label class="form-label">Destino</label>
 
             <input
-              id="destino"
-              type="text"
               class="form-control"
+              type="text"
               name="destino"
               [(ngModel)]="nuevoPlan.destino"
-              placeholder="Ej: Cartagena"
-              required
-            >
-
+              placeholder="Ej. Cartagena"
+              required>
           </div>
 
-
-          <!-- DESCRIPCIÓN -->
-
-          <div class="col-12 mb-3">
-
-            <label
-              for="descripcion"
-              class="form-label"
-            >
-              Descripción
-            </label>
+          <div class="col-12">
+            <label class="form-label">Descripción</label>
 
             <textarea
-              id="descripcion"
               class="form-control"
               name="descripcion"
               rows="3"
               [(ngModel)]="nuevoPlan.descripcion"
-              placeholder="Describe el plan turístico"
-              required
-            ></textarea>
-
+              placeholder="Describe el plan"
+              required></textarea>
           </div>
 
-
-          <!-- PRECIO -->
-
-          <div class="col-md-4 mb-3">
-
-            <label
-              for="precio"
-              class="form-label"
-            >
-              Precio
-            </label>
+          <div class="col-md-4">
+            <label class="form-label">Precio</label>
 
             <input
-              id="precio"
-              type="number"
               class="form-control"
+              type="number"
               name="precio"
               [(ngModel)]="nuevoPlan.precio"
               min="0"
-              required
-            >
-
+              required>
           </div>
 
-
-          <!-- DURACIÓN -->
-
-          <div class="col-md-4 mb-3">
-
-            <label
-              for="duracion"
-              class="form-label"
-            >
-              Duración
-            </label>
+          <div class="col-md-4">
+            <label class="form-label">Duración</label>
 
             <input
-              id="duracion"
-              type="text"
               class="form-control"
+              type="text"
               name="duracion"
               [(ngModel)]="nuevoPlan.duracion"
-              placeholder="Ej: 3 días"
-              required
-            >
-
+              placeholder="Ej. 3 días"
+              required>
           </div>
 
-
-          <!-- DISPONIBILIDAD -->
-
-          <div class="col-md-4 mb-3">
-
-            <label
-              for="disponibilidad"
-              class="form-label"
-            >
-              Disponibilidad
-            </label>
+          <div class="col-md-4">
+            <label class="form-label">Disponibilidad</label>
 
             <input
-              id="disponibilidad"
-              type="number"
               class="form-control"
+              type="number"
               name="disponibilidad"
               [(ngModel)]="nuevoPlan.disponibilidad"
               min="0"
-              required
-            >
-
+              required>
           </div>
-
         </div>
 
-
-        <!-- BOTONES -->
-
-        <div class="d-flex gap-2">
-
+        <div class="d-flex gap-2 mt-4">
           <button
-            type="submit"
             class="btn btn-primary"
-            [disabled]="planForm.invalid"
-          >
-            Guardar plan
+            type="submit"
+            [disabled]="guardando">
+            {{ editando ? 'Guardar cambios' : 'Guardar plan' }}
           </button>
 
           <button
-            type="button"
             class="btn btn-secondary"
-            (click)="limpiarFormulario()"
-          >
-            Limpiar
+            type="button"
+            (click)="cancelarEdicion()">
+            {{ editando ? 'Cancelar' : 'Limpiar' }}
           </button>
-
         </div>
-
       </form>
-
     </div>
-
   </div>
 
+  <h2 class="h4 mb-1">Planes registrados</h2>
 
-  <!-- LISTADO -->
+  <p class="text-muted mb-3">
+    Total: {{ planes.length }}
+  </p>
 
-  <div class="d-flex justify-content-between align-items-center mb-3">
-
-    <div>
-
-      <h2 class="h4 mb-1">
-        Planes registrados
-      </h2>
-
-      <p class="text-muted mb-0">
-        Total:
-        {{ planes.length }}
-      </p>
-
-    </div>
-
-    <button
-      type="button"
-      class="btn btn-outline-primary"
-      (click)="cargarPlanes()"
-    >
-      Actualizar
-    </button>
-
-  </div>
-
-
-  <!-- SIN PLANES -->
-
-  @if (planes.length === 0) {
-
+  @if (cargando) {
+    <p class="text-muted">
+      Consultando planes...
+    </p>
+  } @else if (planes.length === 0) {
     <div class="alert alert-info">
-
-      No hay planes turísticos registrados.
-
+      No hay planes registrados.
     </div>
-
-  }
-
-
-  <!-- TARJETAS -->
-
-  @if (planes.length > 0) {
-
-    <div class="row">
-
-      @for (
-        plan of planes;
-        track plan.id
-      ) {
-
-        <div class="col-lg-4 col-md-6 mb-4">
-
-          <div class="card h-100 shadow-sm plan-card">
-
-            <div class="card-body">
-
-              <div
-                class="d-flex justify-content-between align-items-start mb-3"
-              >
-
-                <h3 class="h5 card-title mb-0">
+  } @else {
+    <div class="row g-4">
+      @for (plan of planes; track plan.id) {
+        <div class="col-md-6 col-xl-4">
+          <div class="card card-turistear shadow-sm h-100 plan-card">
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between mb-2">
+                <h3 class="h5 mb-0">
                   {{ plan.nombre }}
                 </h3>
 
-                <span class="badge text-bg-primary">
+                <span class="badge bg-light text-dark border">
                   #{{ plan.id }}
                 </span>
-
               </div>
 
-
-              <p class="mb-2">
-
-                <strong>
-                  Destino:
-                </strong>
-
-                {{ plan.destino }}
-
-              </p>
-
-
               <p class="text-muted">
+                {{ plan.destino }}
+              </p>
 
+              <p class="flex-grow-1">
                 {{ plan.descripcion }}
-
               </p>
 
-
-              <hr>
-
-
-              <p class="mb-2">
-
-                <strong>
-                  Duración:
-                </strong>
-
+              <p class="mb-1">
+                <strong>Duración:</strong>
                 {{ plan.duracion }}
-
               </p>
 
-
-              <p class="mb-2">
-
-                <strong>
-                  Precio:
-                </strong>
-
+              <p class="mb-1">
+                <strong>Precio:</strong>
                 {{ plan.precio | currency:'COP':'symbol':'1.0-0' }}
-
               </p>
 
-
-              <p class="mb-0">
-
-                <strong>
-                  Disponibilidad:
-                </strong>
-
+              <p class="mb-3">
+                <strong>Disponibilidad:</strong>
                 {{ plan.disponibilidad }}
-
               </p>
 
+              <div class="d-flex gap-2">
+                <a
+                  class="btn btn-sm btn-outline-primary"
+                  [routerLink]="['/planes', plan.id]">
+                  Ver detalle
+                </a>
+
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  type="button"
+                  (click)="editarPlan(plan)">
+                  Editar
+                </button>
+
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  type="button"
+                  (click)="eliminarPlan(plan.id)">
+                  Eliminar
+                </button>
+              </div>
             </div>
-
           </div>
-
         </div>
-
       }
-
     </div>
-
   }
-
 </div>

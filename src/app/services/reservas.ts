@@ -1,7 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Reserva, EstadoReserva } from '../models/turistear.models';
+
+import {
+  Reserva,
+  EstadoReserva
+} from '../models/turistear.models';
 
 @Injectable({
   providedIn: 'root'
@@ -15,22 +19,38 @@ export class ReservasService {
   }
 
   buscarPorId(id: number): Observable<Reserva> {
-    return this.http.get<Reserva>(`${this.apiUrl}/${id}`);
+    return this.http.get<Reserva>(
+      `${this.apiUrl}/${id}`
+    );
   }
 
   crear(reserva: Reserva): Observable<Reserva> {
-    return this.http.post<Reserva>(this.apiUrl, reserva);
+    return this.http.post<Reserva>(
+      this.apiUrl,
+      reserva
+    );
   }
 
-  actualizar(id: number, reserva: Reserva): Observable<Reserva> {
-    return this.http.put<Reserva>(`${this.apiUrl}/${id}`, reserva);
+  actualizar(
+    id: number,
+    reserva: Reserva
+  ): Observable<Reserva> {
+    return this.http.put<Reserva>(
+      `${this.apiUrl}/${id}`,
+      reserva
+    );
   }
 
   eliminar(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(
+      `${this.apiUrl}/${id}`
+    );
   }
 
-  cambiarEstado(id: number, estado: EstadoReserva): Observable<Reserva> {
+  cambiarEstado(
+    id: number,
+    estado: EstadoReserva
+  ): Observable<Reserva> {
     return this.http.put<Reserva>(
       `${this.apiUrl}/${id}/estado?estado=${estado}`,
       {}

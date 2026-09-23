@@ -1,0 +1,30 @@
+.clima-card {
+  border-top: 4px solid #0f766e;
+}
+
+.temperatura {
+  color: #115e59;
+  font-size: 56px;
+  font-weight: bold;
+}
+
+.temperatura span {
+  font-size: 24px;
+  color: #6c757d;
+}
+
+.dato-clima {
+  padding: 15px;
+  border: 1px solid #d9e4e1;
+  border-radius: 8px;
+}
+
+.dato-clima small,
+.dato-clima strong {
+  display: block;
+}
+
+.dato-clima small {
+  color: #6c757d;
+  margin-bottom: 5px;
+}

@@ -1,0 +1,20 @@
+.detalle-card {
+  border-top: 4px solid #0f766e;
+}
+
+.dato {
+  padding: 15px;
+  background-color: #f5f9f8;
+  border: 1px solid #d9e4e1;
+  border-radius: 8px;
+}
+
+.dato small,
+.dato strong {
+  display: block;
+}
+
+.dato small {
+  color: #6c757d;
+  margin-bottom: 5px;
+}

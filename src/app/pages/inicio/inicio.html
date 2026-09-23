@@ -1,0 +1,131 @@
+<div class="container py-4">
+  <div class="inicio rounded p-4 mb-4">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <h1 class="display-5 fw-bold">
+          Turistear
+        </h1>
+
+        <p class="lead mb-0">
+          Organiza planes, vuelos y reservas desde un solo lugar.
+        </p>
+      </div>
+
+      <div class="col-lg-4 mt-3 text-lg-end">
+        <button
+          class="btn btn-primary"
+          type="button"
+          (click)="cargarDatos()"
+          [disabled]="cargando">
+          Actualizar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (mensaje) {
+    <div class="alert alert-warning">
+      {{ mensaje }}
+    </div>
+  }
+
+  @if (cargando) {
+    <p class="text-muted">
+      Consultando información...
+    </p>
+  } @else {
+    <div class="row g-4">
+      <div class="col-md-6 col-xl-3">
+        <div class="card card-turistear shadow-sm h-100 indicador">
+          <div class="card-body">
+            <p class="text-muted mb-1">
+              Planes
+            </p>
+
+            <h2 class="display-6 text-success">
+              {{ planes.length }}
+            </h2>
+
+            <a
+              routerLink="/planes"
+              class="btn btn-sm btn-outline-primary">
+              Ver planes
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xl-3">
+        <div class="card card-turistear shadow-sm h-100 indicador">
+          <div class="card-body">
+            <p class="text-muted mb-1">
+              Planes disponibles
+            </p>
+
+            <h2 class="display-6 text-success">
+              {{ planesDisponibles }}
+            </h2>
+
+            <a
+              routerLink="/planes"
+              class="btn btn-sm btn-outline-primary">
+              Consultar
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xl-3">
+        <div class="card card-turistear shadow-sm h-100 indicador">
+          <div class="card-body">
+            <p class="text-muted mb-1">
+              Vuelos
+            </p>
+
+            <h2 class="display-6 text-success">
+              {{ vuelos.length }}
+            </h2>
+
+            <a
+              routerLink="/vuelos"
+              class="btn btn-sm btn-outline-primary">
+              Ver vuelos
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xl-3">
+        <div class="card card-turistear shadow-sm h-100 indicador">
+          <div class="card-body">
+            <p class="text-muted mb-1">
+              Reservas pendientes
+            </p>
+
+            <h2 class="display-6 text-warning">
+              {{ reservasPendientes }}
+            </h2>
+
+            <a
+              routerLink="/reservas"
+              class="btn btn-sm btn-outline-primary">
+              Ver reservas
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-turistear shadow-sm mt-4">
+      <div class="card-body">
+        <h2 class="h5">
+          Resumen de vuelos
+        </h2>
+
+        <p class="text-muted mb-0">
+          Hay {{ cuposVuelos }} cupos registrados.
+        </p>
+      </div>
+    </div>
+  }
+</div>

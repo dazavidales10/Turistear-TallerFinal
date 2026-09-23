@@ -1,31 +1,55 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-dark navbar-turistear">
   <div class="container">
-    <a class="navbar-brand fw-bold" routerLink="/planes">
-      🌎 Turistear
+    <a class="navbar-brand fw-bold" routerLink="/inicio">
+      Turistear
     </a>
 
-    <ul class="navbar-nav ms-auto">
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/planes">
-          🏝️ Planes
-        </a>
-      </li>
+    <div class="navbar-nav flex-row flex-wrap gap-1">
+      <a
+        class="nav-link px-3"
+        routerLink="/inicio"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }">
+        Inicio
+      </a>
 
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/vuelos">
-          ✈️ Vuelos
-        </a>
-      </li>
+      <a
+        class="nav-link px-3"
+        routerLink="/planes"
+        routerLinkActive="active">
+        Planes
+      </a>
 
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/reservas">
-          📋 Reservas
-        </a>
-      </li>
-    </ul>
+      <a
+        class="nav-link px-3"
+        routerLink="/vuelos"
+        routerLinkActive="active">
+        Vuelos
+      </a>
+
+      <a
+        class="nav-link px-3"
+        routerLink="/reservas"
+        routerLinkActive="active">
+        Reservas
+      </a>
+
+      <a
+        class="nav-link px-3"
+        routerLink="/clima"
+        routerLinkActive="active">
+        Clima
+      </a>
+    </div>
   </div>
 </nav>
 
-<main class="container py-4">
+<main class="py-3">
   <router-outlet></router-outlet>
 </main>
+
+<footer class="footer-turistear">
+  <div class="container text-center py-3">
+    <small>Turistear - Gestión de viajes y destinos</small>
+  </div>
+</footer>

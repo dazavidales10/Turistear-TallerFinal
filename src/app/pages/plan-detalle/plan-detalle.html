@@ -1,0 +1,82 @@
+<div class="container py-4">
+  <div class="mb-4">
+    <a
+      routerLink="/planes"
+      class="btn btn-outline-primary">
+      Volver a planes
+    </a>
+  </div>
+
+  @if (cargando) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary"></div>
+
+      <p class="text-muted mt-2">
+        Cargando información...
+      </p>
+    </div>
+  } @else if (mensaje) {
+    <div class="alert alert-danger">
+      {{ mensaje }}
+    </div>
+  } @else if (plan) {
+    <div class="card card-turistear shadow-sm detalle-card">
+      <div class="card-body p-4">
+        <span class="badge bg-light text-dark border">
+          Plan #{{ plan.id }}
+        </span>
+
+        <h1 class="page-title mt-3">
+          {{ plan.nombre }}
+        </h1>
+
+        <p class="text-muted">
+          {{ plan.destino }}
+        </p>
+
+        <p class="mt-4">
+          {{ plan.descripcion }}
+        </p>
+
+        <div class="row g-3 mt-2">
+          <div class="col-md-4">
+            <div class="dato">
+              <small>Precio</small>
+
+              <strong>
+                {{ plan.precio | currency:'COP':'symbol':'1.0-0' }}
+              </strong>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="dato">
+              <small>Duración</small>
+
+              <strong>
+                {{ plan.duracion }}
+              </strong>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="dato">
+              <small>Disponibilidad</small>
+
+              <strong>
+                {{ plan.disponibilidad }}
+              </strong>
+            </div>
+          </div>
+        </div>
+
+        <a
+          routerLink="/clima"
+          [queryParams]="{ destino: plan.destino }"
+          class="btn btn-primary mt-4">
+          Consultar clima del destino
+        </a>
+      </div>
+    </div>
+  }
+</div>

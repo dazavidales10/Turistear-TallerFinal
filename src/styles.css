@@ -1,7 +1,64 @@
-html,
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
 body {
   margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
+  background-color: #f5f9f8;
+  color: #263238;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar-turistear {
+  background-color: #0f766e;
+}
+
+.navbar-turistear .nav-link {
+  color: white;
+  border-radius: 5px;
+}
+
+.navbar-turistear .nav-link:hover,
+.navbar-turistear .nav-link.active {
+  background-color: #115e59;
+  color: white;
+}
+
+.footer-turistear {
+  margin-top: 40px;
+  background-color: white;
+  border-top: 1px solid #d9e4e1;
+  color: #6c757d;
+}
+
+.page-title {
+  color: #115e59;
+  font-weight: bold;
+}
+
+.page-text {
+  color: #6c757d;
+}
+
+.card-turistear {
+  border: 1px solid #d9e4e1;
+  border-radius: 10px;
+}
+
+.btn-primary {
+  background-color: #0f766e;
+  border-color: #0f766e;
+}
+
+.btn-primary:hover {
+  background-color: #115e59;
+  border-color: #115e59;
+}
+
+.btn-outline-primary {
+  color: #0f766e;
+  border-color: #0f766e;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0f766e;
+  border-color: #0f766e;
 }

@@ -1,9 +1,12 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { ReservasService } from '../../services/reservas';
-import { Reserva, EstadoReserva } from '../../models/turistear.models';
+import {
+  Reserva,
+  EstadoReserva
+} from '../../models/turistear.models';
 
 @Component({
   selector: 'app-reservas',
@@ -14,12 +17,15 @@ import { Reserva, EstadoReserva } from '../../models/turistear.models';
 })
 export class Reservas implements OnInit {
   private reservasService = inject(ReservasService);
+  private cdr = inject(ChangeDetectorRef);
 
   reservas: Reserva[] = [];
   nuevaReserva: Reserva = this.reservaVacia();
 
   editando = false;
   idEditando: number | null = null;
+  cargando = true;
+  guardando = false;
 
   mensaje = '';
   tipoMensaje: 'success' | 'danger' = 'success';
@@ -40,120 +46,140 @@ export class Reservas implements OnInit {
       tipoServicio: 'PLAN',
       servicioId: 0,
       cantidadPersonas: 1,
-      fechaReserva: '',
-      estado: 'PENDIENTE'
+      fechaReserva: ''
     };
   }
 
   cargarReservas(): void {
+    this.cargando = true;
+
     this.reservasService.listar().subscribe({
-      next: (respuesta: Reserva[]) => {
+      next: respuesta => {
         this.reservas = respuesta;
+        this.cargando = false;
+        this.cdr.detectChanges();
       },
-      error: (error: unknown) => {
+      error: error => {
         console.error('Error al cargar reservas:', error);
-        this.mostrarMensaje('No fue posible cargar las reservas.', 'danger');
+        this.cargando = false;
+
+        this.mostrarMensaje(
+          'No fue posible cargar las reservas.',
+          'danger'
+        );
+
+        this.cdr.detectChanges();
       }
     });
   }
 
-  crearReserva(): void {
-    if (!this.validarFormulario()) return;
+  guardarReserva(): void {
+    if (!this.validarFormulario() || this.guardando) return;
 
-    this.reservasService.crear(this.nuevaReserva).subscribe({
-      next: (respuesta: Reserva) => {
+    this.guardando = true;
+
+    const datos: Reserva = {
+      usuario: this.nuevaReserva.usuario.trim(),
+      tipoServicio: this.nuevaReserva.tipoServicio,
+      servicioId: Number(this.nuevaReserva.servicioId),
+      cantidadPersonas: Number(
+        this.nuevaReserva.cantidadPersonas
+      ),
+      fechaReserva: this.nuevaReserva.fechaReserva
+    };
+
+    if (
+      this.editando &&
+      this.idEditando !== null
+    ) {
+      this.reservasService
+        .actualizar(this.idEditando, datos)
+        .subscribe({
+          next: respuesta => {
+            const posicion =
+              this.reservas.findIndex(
+                reserva =>
+                  reserva.id === this.idEditando
+              );
+
+            if (posicion !== -1) {
+              this.reservas[posicion] = respuesta;
+            }
+
+            this.guardando = false;
+            this.cancelarEdicion();
+
+            this.mostrarMensaje(
+              'Reserva actualizada correctamente.',
+              'success'
+            );
+
+            this.cdr.detectChanges();
+          },
+          error: error => {
+            console.error(
+              'Error al actualizar reserva:',
+              error
+            );
+
+            this.guardando = false;
+
+            this.mostrarMensaje(
+              'No fue posible actualizar la reserva.',
+              'danger'
+            );
+
+            this.cdr.detectChanges();
+          }
+        });
+
+      return;
+    }
+
+    this.reservasService.crear(datos).subscribe({
+      next: respuesta => {
         this.reservas.push(respuesta);
-        this.mostrarMensaje('Reserva creada correctamente.', 'success');
-        this.cancelarEdicion();
+
+        this.guardando = false;
+        this.nuevaReserva = this.reservaVacia();
+
+        this.mostrarMensaje(
+          'Reserva creada correctamente.',
+          'success'
+        );
+
+        this.cdr.detectChanges();
       },
-      error: (error: unknown) => {
-        console.error('Error al crear reserva:', error);
-        this.mostrarMensaje('No fue posible crear la reserva.', 'danger');
+      error: error => {
+        console.error(
+          'Error al crear reserva:',
+          error
+        );
+
+        this.guardando = false;
+
+        this.mostrarMensaje(
+          'No fue posible crear la reserva.',
+          'danger'
+        );
+
+        this.cdr.detectChanges();
       }
     });
   }
 
   editarReserva(reserva: Reserva): void {
-    if (!reserva.id) return;
+    if (reserva.id === undefined) return;
 
     this.editando = true;
     this.idEditando = reserva.id;
-
     this.nuevaReserva = {
-      id: reserva.id,
-      usuario: reserva.usuario,
-      tipoServicio: reserva.tipoServicio,
-      servicioId: reserva.servicioId,
-      cantidadPersonas: reserva.cantidadPersonas,
-      fechaReserva: reserva.fechaReserva,
-      precioTotal: reserva.precioTotal,
-      estado: reserva.estado || 'PENDIENTE'
+      ...reserva
     };
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  actualizarReserva(): void {
-    if (!this.editando || this.idEditando === null) return;
-    if (!this.validarFormulario()) return;
-
-    this.reservasService.actualizar(
-      this.idEditando,
-      this.nuevaReserva
-    ).subscribe({
-      next: (respuesta: Reserva) => {
-        const posicion = this.reservas.findIndex(
-          reserva => reserva.id === this.idEditando
-        );
-
-        if (posicion !== -1) {
-          this.reservas[posicion] = respuesta;
-        }
-
-        this.mostrarMensaje(
-          'Reserva actualizada correctamente.',
-          'success'
-        );
-
-        this.cancelarEdicion();
-      },
-      error: (error: unknown) => {
-        console.error('Error al actualizar reserva:', error);
-        this.mostrarMensaje(
-          'No fue posible actualizar la reserva.',
-          'danger'
-        );
-      }
-    });
-  }
-
-  eliminarReserva(id: number | undefined): void {
-    if (id === undefined) return;
-
-    const confirmar = window.confirm(
-      '¿Estás seguro de que deseas eliminar esta reserva?'
-    );
-
-    if (!confirmar) return;
-
-    this.reservasService.eliminar(id).subscribe({
-      next: () => {
-        this.reservas = this.reservas.filter(
-          reserva => reserva.id !== id
-        );
-
-        this.mostrarMensaje(
-          'Reserva eliminada correctamente.',
-          'success'
-        );
-      },
-      error: (error: unknown) => {
-        console.error('Error al eliminar reserva:', error);
-        this.mostrarMensaje(
-          'No fue posible eliminar la reserva.',
-          'danger'
-        );
-      }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
     });
   }
 
@@ -163,29 +189,85 @@ export class Reservas implements OnInit {
   ): void {
     if (id === undefined) return;
 
-    this.reservasService.cambiarEstado(id, estado).subscribe({
-      next: (respuesta: Reserva) => {
-        const posicion = this.reservas.findIndex(
-          reserva => reserva.id === id
-        );
+    this.reservasService
+      .cambiarEstado(id, estado)
+      .subscribe({
+        next: respuesta => {
+          const posicion =
+            this.reservas.findIndex(
+              reserva => reserva.id === id
+            );
 
-        if (posicion !== -1) {
-          this.reservas[posicion] = respuesta;
+          if (posicion !== -1) {
+            this.reservas[posicion] = respuesta;
+          }
+
+          this.mostrarMensaje(
+            'Estado actualizado correctamente.',
+            'success'
+          );
+
+          this.cdr.detectChanges();
+        },
+        error: error => {
+          console.error(
+            'Error al cambiar estado:',
+            error
+          );
+
+          this.mostrarMensaje(
+            'No fue posible actualizar el estado.',
+            'danger'
+          );
+
+          this.cdr.detectChanges();
         }
+      });
+  }
 
-        this.mostrarMensaje(
-          'Estado actualizado correctamente.',
-          'success'
-        );
-      },
-      error: (error: unknown) => {
-        console.error('Error al cambiar estado:', error);
-        this.mostrarMensaje(
-          'No fue posible cambiar el estado.',
-          'danger'
-        );
-      }
-    });
+  eliminarReserva(
+    id: number | undefined
+  ): void {
+    if (id === undefined) return;
+
+    if (
+      !window.confirm(
+        '¿Deseas eliminar esta reserva?'
+      )
+    ) {
+      return;
+    }
+
+    this.reservasService
+      .eliminar(id)
+      .subscribe({
+        next: () => {
+          this.reservas =
+            this.reservas.filter(
+              reserva => reserva.id !== id
+            );
+
+          this.mostrarMensaje(
+            'Reserva eliminada correctamente.',
+            'success'
+          );
+
+          this.cdr.detectChanges();
+        },
+        error: error => {
+          console.error(
+            'Error al eliminar reserva:',
+            error
+          );
+
+          this.mostrarMensaje(
+            'No fue posible eliminar la reserva.',
+            'danger'
+          );
+
+          this.cdr.detectChanges();
+        }
+      });
   }
 
   cancelarEdicion(): void {
@@ -200,25 +282,22 @@ export class Reservas implements OnInit {
       !this.nuevaReserva.fechaReserva
     ) {
       this.mostrarMensaje(
-        'Completa todos los campos obligatorios.',
+        'Completa el usuario y la fecha.',
         'danger'
       );
+
       return false;
     }
 
-    if (this.nuevaReserva.servicioId <= 0) {
+    if (
+      this.nuevaReserva.servicioId <= 0 ||
+      this.nuevaReserva.cantidadPersonas <= 0
+    ) {
       this.mostrarMensaje(
-        'El ID del servicio debe ser mayor que 0.',
+        'El servicio y la cantidad de personas deben ser mayores que cero.',
         'danger'
       );
-      return false;
-    }
 
-    if (this.nuevaReserva.cantidadPersonas <= 0) {
-      this.mostrarMensaje(
-        'La cantidad de personas debe ser mayor que 0.',
-        'danger'
-      );
       return false;
     }
 
@@ -234,6 +313,7 @@ export class Reservas implements OnInit {
 
     setTimeout(() => {
       this.mensaje = '';
+      this.cdr.detectChanges();
     }, 4000);
   }
 }
