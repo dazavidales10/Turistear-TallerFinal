@@ -54,7 +54,7 @@ export class Planes implements OnInit {
       error: error => {
         console.error('Error al cargar planes:', error);
         this.cargando = false;
-        this.mostrarMensaje('No fue posible cargar los planes.', 'danger');
+        this.mostrarMensaje('No fue posible cargar los planes. Comprueba que el servidor esté disponible', 'danger');
         this.cdr.detectChanges();
       }
     });

@@ -56,6 +56,11 @@ export class Clima implements OnInit {
       nombre: 'San Andrés',
       latitud: 12.5847,
       longitud: -81.7006
+    },
+     {
+      nombre: 'Armenia',
+      latitud: 4.5339,
+      longitud: -75.6811
     }
   ];
 
@@ -136,7 +141,7 @@ export class Clima implements OnInit {
         );
 
         this.mensaje =
-          'El servicio de clima no está disponible en este momento.';
+          'No fue posible consultar el clima. El servicio no está disponible en este momento.';
 
         this.cargando = false;
         this.cdr.detectChanges();

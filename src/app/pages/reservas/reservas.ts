@@ -158,10 +158,7 @@ export class Reservas implements OnInit {
 
         this.guardando = false;
 
-        this.mostrarMensaje(
-          'No fue posible crear la reserva.',
-          'danger'
-        );
+        this.mostrarMensaje('No fue posible cargar las reservas. Comprueba que el servidor esté disponible', 'danger');
 
         this.cdr.detectChanges();
       }
